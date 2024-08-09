@@ -68,7 +68,7 @@
                         </div>
                     </div>
 
-                    <div class="-my-4 divide-y divide-gray-200 dark:divide-gray-700">
+                    <div class="-my-4 divide-y divide-gray-200 dark:divide-gray-700 px-4">
 
                         @foreach ($aktivitas as $act)
                             <div id="id-{{ $act->id }}"
