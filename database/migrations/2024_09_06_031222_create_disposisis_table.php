@@ -11,17 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('aktivitas', function (Blueprint $table) {
+        Schema::create('disposisis', function (Blueprint $table) {
             $table->id();
+            $table->bigInteger('aktivitas_id');
             $table->bigInteger('user_id');
-            $table->string('aktivitas');
-            $table->string('penyelenggara')->default('Diskominfo');
-            $table->timestamp('waktu_mulai');
-            $table->timestamp('waktu_selesai')->nullable();
-            $table->string('tempat');
-            $table->string('catatan')->nullable();
-            $table->string('file')->nullable();
-
             $table->timestamps();
         });
     }
@@ -31,6 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('aktivitas');
+        Schema::dropIfExists('disposisis');
     }
 };

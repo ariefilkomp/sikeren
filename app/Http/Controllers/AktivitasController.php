@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Aktivitas;
+use App\Models\Disposisi;
 use App\Models\Peserta;
 use App\Models\User;
 use Carbon\Carbon;
@@ -59,7 +60,6 @@ class AktivitasController extends Controller
             'waktu_mulai' => 'required|date_format:"Y-m-d H:i"',
             'waktu_selesai' => 'nullable|after:waktu_mulai',
             'tempat' => 'required',
-            'disposisi' => 'nullable',
             'file' => 'nullable|file|max:2048|mimes:pdf,jpg,jpeg,png',
             'catatan' => 'nullable',
         ]);
@@ -69,9 +69,9 @@ class AktivitasController extends Controller
         }
         $validated['user_id'] = auth()->user()->id;
         $aktivitas = Aktivitas::create($validated);
-        if(count($request->peserta) ) {
-            foreach ($request->peserta as $user_id) {
-                Peserta::create([
+        if(count($request->disposisi) ) {
+            foreach ($request->disposisi as $user_id) {
+                Disposisi::create([
                     'user_id' => $user_id,
                     'aktivitas_id' => $aktivitas->id
                 ]);

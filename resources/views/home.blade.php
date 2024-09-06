@@ -43,7 +43,7 @@
                 <div class="flex flex-col gap-2 py-4 sm:gap-6 sm:flex-row sm:items-start" x-data="{ reportsOpen: false }">
                     <p class="w-32 text-lg font-normal text-gray-500 sm:text-right dark:text-gray-400 shrink-0">
                         {{ Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $act->waktu_mulai)->format('H:i') }} -
-                        {{ $act->waktu_selesai ?? 'Selesai' }}
+                        {{ $act->waktu_selesai ? Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $act->waktu_selesai)->format('H:i') : 'Selesai' }}
                     </p>
                     <div class="flex flex-col gap-2 w-full">
                         <div class="flex flex-row justify-between gap-2 w-full" @click="reportsOpen = !reportsOpen">
@@ -61,86 +61,75 @@
                             </div>
                         </div>
 
-                        <div class="flex p-5 md:p-0 w-full transform transition duration-300 ease-in-out pb-10" x-cloak
+                        <div class="flex flex-col p-5 md:p-0 w-full transform transition duration-300 ease-in-out pb-10" x-cloak
                             x-show="reportsOpen" x-collapse x-collapse.duration.500ms>
-                            <table>
-                                <tbody>
-                                    <tr>
-                                        <td class="text-small text-slate-800 dark:text-white">
-                                            Tempat
-                                        </td>
-                                        <td>:</td>
-                                        <td class="text-small font-semibold text-slate-800 dark:text-white">
-                                            {{ $act->tempat }}
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td class="text-small text-slate-800 dark:text-white">
-                                            Penyelenggara
-                                        </td>
-                                        <td>:</td>
-                                        <td class="text-small font-semibold text-slate-800 dark:text-white">
-                                            {{ $act->penyelenggara }}
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td class="text-small text-slate-800 dark:text-white align-top">
-                                            Peserta
-                                        </td>
-                                        <td class="w-2 align-top">:</td>
-                                        <td class="text-small font-semibold text-slate-800 dark:text-white align-top">
-                                            <div class="flex flex-col">
-                                                @if ($act->peserta)
-                                                    @foreach ($act->peserta as $p)
-                                                        <p>{{ $p->user->name }}</p>
-                                                    @endforeach
-                                                @endif
-                                            </div>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td class="text-small text-slate-800 dark:text-white">
-                                            Disposisi
-                                        </td>
-                                        <td>:</td>
-                                        <td class="text-small font-semibold text-slate-800 dark:text-white">
-                                            {{ $act->disposisi }}
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td class="text-small text-slate-800 dark:text-white">
-                                            Catatan
-                                        </td>
-                                        <td>:</td>
-                                        <td class="text-small font-semibold text-slate-800 dark:text-white">
-                                            {{ $act->catatan ?? '-' }}
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td class="text-small text-slate-800 dark:text-white">
-                                            Surat
-                                        </td>
-                                        <td>:</td>
-                                        <td class="text-small font-semibold text-slate-800 dark:text-white">
-                                            @if ($act->file != null)
-                                                @php
-                                                    $ext = pathinfo($act->file, PATHINFO_EXTENSION);
-                                                @endphp
-                                                @if ($ext == 'pdf')
-                                                <a href="{{ url('/storage/files/' . $act->file) }}" target="_blank">
-                                                    <img src="{{ url('assets/images/pdf.png') }}" alt=""
-                                                        width="24px" class="cursor-pointer"/>
-                                                </a>
-                                                @else
-                                                    <img src="{{ url('assets/images/mail.png') }}" alt=""
-                                                        width="24px" class="cursor-pointer"
-                                                        @click="$dispatch('lightbox',  {  imgModalSrc: '{{ url('/storage/files/' . $act->file) }}' })" />
-                                                @endif
-                                            @endif
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
+
+                            <div class="flex flex-col gap-2 sm:gap-6 sm:flex-row sm:items-start">
+                                <p class="w-32 sm:w-60 text-lg font-normal text-gray-500 sm:text-left dark:text-gray-400">
+                                    Tempat
+                                </p>
+                                <p class="w-full text-small font-semibold text-slate-800 dark:text-white">
+                                   <span class="hidden sm:inline">:&nbsp;</span> {{ $act->tempat }}
+                                </p>
+                            </div>
+
+                            <div class="flex flex-col gap-2 sm:gap-6 sm:flex-row sm:items-start">
+                                <p class="w-32 sm:w-60 text-lg font-normal text-gray-500 sm:text-left dark:text-gray-400">
+                                    OPD Penyelenggara
+                                </p>
+                                <p class="w-full text-small font-semibold text-slate-800 dark:text-white">
+                                   <span class="hidden sm:inline">:&nbsp;</span> {{ $act->penyelenggara }}
+                                </p>
+                            </div>
+
+                            <div class="flex flex-col gap-2 sm:gap-6 sm:flex-row sm:items-start">
+                                <p
+                                    class="w-32 sm:w-60 text-lg font-normal text-gray-500 sm:text-left dark:text-gray-400">
+                                    Disposisi
+                                </p>
+                                <p class="w-full text-small font-semibold text-slate-800 dark:text-white">
+                                    <span class="hidden sm:inline">:&nbsp;</span>
+                                    @if($act->disposisi)
+                                        @foreach ($act->disposisi as $dis)
+                                            {{ $dis->user->name }}; &nbsp;
+                                        @endforeach
+                                    @endif
+                                </p>
+                            </div>
+
+                            <div class="flex flex-col gap-2 sm:gap-6 sm:flex-row sm:items-start">
+                                <p class="w-32 sm:w-60 text-lg font-normal text-gray-500 sm:text-left dark:text-gray-400">
+                                    Catatan / NB
+                                </p>
+                                <p class="w-full text-small font-semibold text-slate-800 dark:text-white">
+                                   <span class="hidden sm:inline">:&nbsp;</span>
+                                   {{ $act->catatan ?? '-' }}
+                                </p>
+                            </div>
+
+                            <div class="flex flex-col gap-2 sm:gap-6 sm:flex-row sm:items-start">
+                                <p class="w-32 sm:w-60 text-lg font-normal text-gray-500 sm:text-left dark:text-gray-400">
+                                    Surat
+                                </p>
+                                <p class="flex w-full text-small font-semibold text-slate-800 dark:text-white">
+                                   <span class="hidden sm:inline">:&nbsp;</span>
+                                   @if ($act->file != null)
+                                        @php
+                                            $ext = pathinfo($act->file, PATHINFO_EXTENSION);
+                                        @endphp
+                                        @if ($ext == 'pdf')
+                                        <a href="{{ url('/storage/files/' . $act->file) }}" target="_blank">
+                                            <img src="{{ url('assets/images/pdf.png') }}" alt=""
+                                                width="24px" class="cursor-pointer"/>
+                                        </a>
+                                        @else
+                                            <img src="{{ url('assets/images/mail.png') }}" alt=""
+                                                width="24px" class="cursor-pointer"
+                                                @click="$dispatch('lightbox',  {  imgModalSrc: '{{ url('/storage/files/' . $act->file) }}' })" />
+                                        @endif
+                                    @endif
+                                </p>
+                            </div>
                         </div>
                     </div>
                 </div>

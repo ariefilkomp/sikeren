@@ -23,7 +23,6 @@ class AktivitasFactory extends Factory
             'penyelenggara' => 'Diskominfo',
             'waktu_mulai' => $this->faker->dateTimeBetween('-8 days', '+8 days'),
             'tempat' => $this->faker->sentence(2),
-            'disposisi' => $this->faker->sentence(2),
             'file' => $file[rand(0,1)],
         ];
     }

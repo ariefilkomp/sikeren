@@ -1,7 +1,7 @@
 <x-app-layout>
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            {{ __('Aktivitas Baru') }}
+            {{ __('Aktivitas / Kegiatan Baru') }}
         </h2>
     </x-slot>
 
@@ -14,17 +14,18 @@
                         @csrf
 
                         <div>
-                            <x-input-label for="aktifitas" :value="__('Aktivitas')" />
+                            <x-input-label for="aktifitas" :value="__('Rincian Kegiatan')" />
                             <x-text-input id="aktivitas" name="aktivitas" type="text" class="mt-1 block w-full"
                                 :value="old('aktivitas')" required autofocus autocomplete="aktivitas" />
                             <x-input-error class="mt-2" :messages="$errors->get('aktivitas')" />
                         </div>
 
                         <div>
-                            <x-input-label for="penyelenggara" :value="__('Penyelenggara')" />
+                            <x-input-label for="penyelenggara" :value="__('OPD Penyelenggara')" />
                             <x-text-input id="penyelenggara" name="penyelenggara" type="text"
                                 class="mt-1 block w-full" :value="old('penyelenggara')" autofocus
-                                autocomplete="penyelenggara" />
+                                autocomplete="penyelenggara"
+                                placeholder="Contoh: Diskominfo" />
                             <x-input-error class="mt-2" :messages="$errors->get('penyelenggara')" />
                         </div>
 
@@ -84,16 +85,20 @@
 
                         <div>
                             <x-input-label for="catatan" :value="__('Catatan')" />
-                            <x-text-input id="catatan" name="catatan" type="text" class="mt-1 block w-full"
-                                :value="old('catatan')" autofocus autocomplete="catatan" />
+                            <textarea id="catatan" name="catatan" type="text" class="mt-1 block w-full border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm"
+                                :value="old('catatan')" autofocus autocomplete="catatan" ></textarea>
                             <x-input-error class="mt-2" :messages="$errors->get('catatan')" />
                         </div>
 
                         <div>
                             <x-input-label for="disposisi" :value="__('Disposisi')" />
-                            <x-text-input id="disposisi" name="disposisi" type="text" class="mt-1 block w-full"
-                                :value="old('disposisi')" autofocus autocomplete="disposisi" />
-                            <x-input-error class="mt-2" :messages="$errors->get('disposisi')" />
+                            <select
+                                class="border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 shadow-sm mt-1 block w-full"
+                                name="disposisi[]" id="disposisi" multiple="multiple">
+                                @foreach($users as $user)
+                                    <option value="{{ $user->id }}">{{ $user->name }}</option>
+                                @endforeach
+                            </select>
                         </div>
 
                         <div>
@@ -101,17 +106,6 @@
                             <input type="file" name="file" accept="pdf,jpg,jpeg,png"
                                 class="border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 shadow-sm mt-1 block w-full">
                             <x-input-error class="mt-2" :messages="$errors->get('file')" />
-                        </div>
-
-                        <div>
-                            <x-input-label for="peserta" :value="__('Peserta')" />
-                            <select
-                                class="border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 shadow-sm mt-1 block w-full"
-                                name="peserta[]" id="peserta" multiple="multiple">
-                                @foreach($users as $user)
-                                    <option value="{{ $user->id }}">{{ $user->name }}</option>
-                                @endforeach
-                            </select>
                         </div>
 
                         <div class="flex items-center gap-4">
@@ -125,7 +119,7 @@
     </div>
     <script>
         $(document).ready(function() {
-            $('#peserta').select2();
+            $('#disposisi').select2();
         });
     </script>
 
