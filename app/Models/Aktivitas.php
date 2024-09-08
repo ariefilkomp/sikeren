@@ -11,11 +11,6 @@ class Aktivitas extends Model
 
     protected $guarded = ['id'];
 
-    public function peserta()
-    {
-        return $this->hasMany(Peserta::class);
-    }
-
     public function disposisi()
     {
         return $this->hasMany(Disposisi::class);

@@ -19,7 +19,9 @@ class User extends Authenticatable
      */
     protected $fillable = [
         'name',
-        'email',
+        'no_hp',
+        'bidang_id',
+        'atasan_id',
         'password',
     ];
 
@@ -61,5 +63,10 @@ class User extends Authenticatable
         $aktivitas_ids = $this->peserta()->pluck('aktivitas_id');
         $aktivitas = Aktivitas::whereIn('id', $aktivitas_ids)->get();
         return $aktivitas;
+    }
+
+    public function bidang()
+    {
+        return $this->belongsTo(Bidang::class);
     }
 }

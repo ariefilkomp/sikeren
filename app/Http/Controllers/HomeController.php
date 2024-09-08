@@ -15,7 +15,7 @@ class HomeController extends Controller
         $today = Carbon::createFromFormat('Y-m-d', $date)->isoFormat('dddd, D MMMM Y');
         $labelHari = Carbon::now()->format('Y-m-d') == $date ? 'Hari ini' : 'Pada Hari';
 
-        $aktivitas = Aktivitas::with('peserta')->whereDate('waktu_mulai', $date)->orderBy('waktu_mulai', 'asc')->get();
+        $aktivitas = Aktivitas::with('disposisi')->whereDate('waktu_mulai', $date)->orderBy('waktu_mulai', 'asc')->get();
         return view('home', compact('today', 'labelHari', 'date', 'aktivitas'));
     }
 }

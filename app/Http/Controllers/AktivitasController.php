@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Models\Aktivitas;
 use App\Models\Disposisi;
-use App\Models\Peserta;
 use App\Models\User;
 use Carbon\Carbon;
 use Carbon\CarbonPeriod;
@@ -29,7 +28,7 @@ class AktivitasController extends Controller
         $liburUrl = 'https://dayoffapi.vercel.app/api?month='. $ym->format('m').'&year='. $ym->format('Y');
         $libur = Http::get($liburUrl)->json();
 
-        $aktivitas = Aktivitas::with('peserta')
+        $aktivitas = Aktivitas::with('disposisi')
             ->select(DB::raw('DATE(waktu_mulai) as date'), DB::raw('count(*) as jumlah_aktivitas'))
             ->whereMonth('waktu_mulai', $ym->format('m'))
             ->groupBy('date')
@@ -77,15 +76,45 @@ class AktivitasController extends Controller
                 ]);
             }    
         }
+
+        if($aktivitas) {
+            $disp = User::whereIn('id', $request->disposisi)->get();
+            foreach ($disp as $d) {
+                $this->sendWa($d->no_hp, 'Anda dapat disposisi');
+            }
+        }
         return redirect()->route('dashboard')->with('success', 'Berhasil menambahkan Aktivitas.');
+    }
+
+    private function sendWa($no_hp, $message)
+    {
+        $url = 'http://localhost:5001/send-message';
+        $waSession = 'mysession';
+        
+        if (substr($no_hp, 0, 1) == '0') {
+            $no_hp = '62' . substr($no_hp, 1);
+        }
+        
+        $pp = [
+            'session' => $waSession,
+            'to' => $no_hp,
+            'text' => $message,
+        ];
+        $response = Http::post($url, $pp);
+
+        if($response->successful()) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
     public function edit($id)
     {
         $aktivitas = Aktivitas::findOrFail($id);
         $users = User::all();
-        $peserta = $aktivitas->peserta->pluck('user_id')->toArray();
-        return view('aktivitas.edit', compact('aktivitas', 'users', 'peserta'));
+        $disposisi = $aktivitas->disposisi->pluck('user_id')->toArray();
+        return view('aktivitas.edit', compact('aktivitas', 'users', 'disposisi'));
     }
 
     public function update($id, Request $request)
@@ -107,10 +136,10 @@ class AktivitasController extends Controller
         }
         $validated['user_id'] = auth()->user()->id;
         Aktivitas::where('id', $request->id)->update($validated);
-        if(count($request->peserta) ) {
-            Peserta::where('aktivitas_id', $request->id)->delete();
-            foreach ($request->peserta as $user_id) {
-                Peserta::create([
+        if(count($request->disposisi) ) {
+            Disposisi::where('aktivitas_id', $request->id)->delete();
+            foreach ($request->disposisi as $user_id) {
+                Disposisi::create([
                     'user_id' => $user_id,
                     'aktivitas_id' => $aktivitas->id
                 ]);

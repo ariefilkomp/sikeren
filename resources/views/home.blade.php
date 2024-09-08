@@ -37,7 +37,7 @@
                 </div>
             </div>
         </div>
-        <div class="-my-4 divide-y divide-gray-200 dark:divide-gray-700">
+        <div class="-my-4 divide-y divide-gray-200 dark:divide-gray-700 px-4 pb-12">
 
             @foreach ($aktivitas as $act)
                 <div class="flex flex-col gap-2 py-4 sm:gap-6 sm:flex-row sm:items-start" x-data="{ reportsOpen: false }">
