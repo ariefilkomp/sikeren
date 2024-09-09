@@ -1,0 +1,5 @@
+KEGIATAN DIBUAT!
+
+* RINCIAN KEGIATAN : {{rincian_kegiatan}}
+* Waktu : {{waktu}}
+* Disposisi : {{disposisi}}

@@ -1,0 +1,7 @@
+PENGINGAT!
+
+2 Jam lagi kegiatan *{{rincian_kegiatan}}* Akan dimulai!
+
+Disposisi: {{disposisi}}
+
+Lihat semua kegiatan pada {{hari}} di {{url}}

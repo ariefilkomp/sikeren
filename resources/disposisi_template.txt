@@ -1,0 +1,9 @@
+DISPOSISI KEGIATAN KEPADA : {{nama}}
+
+* RINCIAN KEGIATAN : {{rincian_kegiatan}}
+* OPD Penyelenggara : {{penyelenggara}}
+* Waktu : {{waktu}}
+* Tempat : {{tempat}}
+* Catatan : {{catatan}}
+
+Lihat semua kegiatan pada {{hari}} di {{url}}

@@ -13,9 +13,10 @@ return new class extends Migration
     {
         Schema::create('messages', function (Blueprint $table) {
             $table->id();
-            $table->string('from');
-            $table->string('to');
-            $table->string('message');
+            $table->string('from')->nullable();
+            $table->string('to')->nullable();
+            $table->integer('aktivitas_id')->nullable();
+            $table->text('message');
             $table->string('message_id')->nullable();
             $table->string('remote_jid')->nullable();
             $table->timestamp('sending_time')->nullable();
