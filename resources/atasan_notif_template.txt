@@ -1,4 +1,4 @@
-KEGIATAN DIBUAT!
+EVENT REMINDER!
 
 * RINCIAN KEGIATAN : {{rincian_kegiatan}}
 * Waktu : {{waktu}}
