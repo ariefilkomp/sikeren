@@ -50,11 +50,13 @@ class SendWa extends Command
 
     private function send(String $no_hp, Message $message)
     {
-        $url = 'http://localhost:5001/send-message';
-        $waSession = 'mysession';
+        $url = env('WA_SEND_URL','http://localhost:5001/send-message');
+        $waSession = env('WA_SESSION','mysession');
 
         if (substr($no_hp, 0, 1) == '0') {
             $no_hp = '62' . substr($no_hp, 1);
+        } elseif (substr($no_hp, 0, 1) == '+') {
+            $no_hp = substr($no_hp, 1);
         }
 
         $pp = [
