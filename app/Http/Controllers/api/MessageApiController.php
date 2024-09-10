@@ -44,9 +44,12 @@ class MessageApiController extends Controller
             else {
                 $tgl = Carbon::now();
                 $aktivitas = Aktivitas::whereDate('waktu_mulai', $tgl->format('Y-m-d'))->get();
-                $message = 'Kegiatan Hari ini: ' . $tgl->isoFormat('dddd, D MMMM Y').'\n\n';
+                $message = 'Kegiatan Hari ini: ' . $tgl->isoFormat('dddd, D MMMM Y').'
+
+';
                 foreach ($aktivitas as $a) {
-                    $message .= '* '.$a->aktivitas . "\n";
+                    $message .= '* '.$a->aktivitas . "
+";
                 }
 
                 Message::create([
