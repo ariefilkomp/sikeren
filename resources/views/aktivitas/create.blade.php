@@ -95,8 +95,12 @@
                             <select
                                 class="border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 shadow-sm mt-1 block w-full"
                                 name="disposisi[]" id="disposisi" multiple="multiple">
-                                @foreach($users as $user)
-                                    <option value="{{ $user->id }}">{{ $user->name }}</option>
+                                @foreach($bidangs as $bidang)
+                                    <optgroup label="{{ $bidang->name }}">
+                                        @foreach($users->where('bidang_id', $bidang->id) as $user)
+                                            <option value="{{ $user->id }}">{{ $user->name }}</option>
+                                        @endforeach
+                                    </optgroup>
                                 @endforeach
                             </select>
                         </div>

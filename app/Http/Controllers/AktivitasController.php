@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Aktivitas;
+use App\Models\Bidang;
 use App\Models\Disposisi;
 use App\Models\Message;
 use App\Models\User;
@@ -49,7 +50,8 @@ class AktivitasController extends Controller
     public function create(Request $request)
     {
         $users = User::all();
-        return view('aktivitas.create', compact('users'));
+        $bidangs = Bidang::all();
+        return view('aktivitas.create', compact('users', 'bidangs'));
     }
 
     public function store(Request $request)
