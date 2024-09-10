@@ -13,7 +13,7 @@ class MessageApiController extends Controller
     public function store(Request $request)
     {
         $token = $request->bearerToken();
-        if(!$token && $token !== env('API_TOKEN')) {
+        if($token !== env('API_TOKEN')) {
             return response()->json(['message' => 'Unauthorized'], 401);
         }
 
