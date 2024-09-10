@@ -48,8 +48,10 @@ class MessageApiController extends Controller
 
 ';
                 foreach ($aktivitas as $a) {
-                    $message .= '* '.$a->aktivitas . "
-";
+                    $mulai = Carbon::parse($a->waktu_mulai)->format('H:i');
+                    $selesai = !empty($a->waktu_selesai) ? Carbon::parse($a->waktu_selesai) : 'Selesai';
+                    $message .= '* '.$a->aktivitas . '( ' . $mulai . ' - ' . $selesai . ' )
+';
                 }
 
                 Message::create([
