@@ -13,21 +13,22 @@
                         <p x-data="{ show: true }" x-show="show" x-transition x-init="setTimeout(() => show = false, 5000)"
                             class="text-sm text-gray-600 bg-green-400 p-4 rounded-xl my-8">{{ session('success') }}</p>
                     @endif
-                    <form method="post" action="{{ route('aktivitas.edit', $aktivitas->id) }}" class="mt-6 space-y-6" enctype="multipart/form-data">
+                    <form method="post" action="{{ route('aktivitas.edit', $aktivitas->id) }}" class="mt-6 space-y-6"
+                        enctype="multipart/form-data">
                         @csrf
 
                         <div>
-                            <x-input-label for="aktifitas" :value="__('Aktivitas')" />
+                            <x-input-label for="aktifitas" :value="__('Rincian Kegiatan')" />
                             <x-text-input id="aktivitas" name="aktivitas" type="text" class="mt-1 block w-full"
                                 :value="old('aktivitas', $aktivitas->aktivitas)" required autofocus autocomplete="aktivitas" />
                             <x-input-error class="mt-2" :messages="$errors->get('aktivitas')" />
                         </div>
 
                         <div>
-                            <x-input-label for="penyelenggara" :value="__('Penyelenggara')" />
+                            <x-input-label for="penyelenggara" :value="__('OPD Penyelenggara')" />
                             <x-text-input id="penyelenggara" name="penyelenggara" type="text"
-                                class="mt-1 block w-full" :value="old('penyelenggara', $aktivitas->penyelenggara)" autofocus
-                                autocomplete="penyelenggara" />
+                                class="mt-1 block w-full" :value="old('penyelenggara', $aktivitas->penyelenggara)" autofocus autocomplete="penyelenggara"
+                                placeholder="Contoh: Diskominfo" />
                             <x-input-error class="mt-2" :messages="$errors->get('penyelenggara')" />
                         </div>
 
@@ -87,16 +88,25 @@
 
                         <div>
                             <x-input-label for="catatan" :value="__('Catatan')" />
-                            <x-text-input id="catatan" name="catatan" type="text" class="mt-1 block w-full"
-                                :value="old('catatan', $aktivitas->catatan)" autofocus autocomplete="catatan" />
+                            <textarea id="catatan" name="catatan" type="text"
+                                class="mt-1 block w-full border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm"
+                                autofocus autocomplete="catatan">{{ old('catatan', $aktivitas->catatan) }}</textarea>
                             <x-input-error class="mt-2" :messages="$errors->get('catatan')" />
                         </div>
 
                         <div>
                             <x-input-label for="disposisi" :value="__('Disposisi')" />
-                            <x-text-input id="disposisi" name="disposisi" type="text" class="mt-1 block w-full"
-                                :value="old('disposisi', $aktivitas->disposisi)" autofocus autocomplete="disposisi" />
-                            <x-input-error class="mt-2" :messages="$errors->get('disposisi')" />
+                            <select
+                                class="border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 shadow-sm mt-1 block w-full"
+                                name="disposisi[]" id="disposisi" multiple="multiple">
+                                @foreach ($bidangs as $bidang)
+                                    <optgroup label="{{ $bidang->name }}">
+                                        @foreach ($users->where('bidang_id', $bidang->id) as $user)
+                                            <option value="{{ $user->id }}" @if(in_array($user->id, $disposisi)) selected @endif>{{ $user->name }}</option>
+                                        @endforeach
+                                    </optgroup>
+                                @endforeach
+                            </select>
                         </div>
 
                         <div>
@@ -104,19 +114,6 @@
                             <input type="file" name="file" accept="pdf,jpg,jpeg,png"
                                 class="border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 shadow-sm mt-1 block w-full">
                             <x-input-error class="mt-2" :messages="$errors->get('file')" />
-                        </div>
-
-                        <div>
-                            <x-input-label for="peserta" :value="__('Peserta')" />
-                            <select
-                                class="border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 shadow-sm mt-1 block w-full"
-                                name="peserta[]" id="peserta" multiple="multiple">
-                                @foreach($users as $user)
-                                    <option value="{{ $user->id }}" 
-                                        @if (in_array($user->id, old('peserta', $peserta))) selected @endif
-                                        >{{ $user->name }}</option>
-                                @endforeach
-                            </select>
                         </div>
 
                         <div class="flex items-center gap-4">
@@ -130,7 +127,7 @@
     </div>
     <script>
         $(document).ready(function() {
-            $('#peserta').select2();
+            $('#disposisi').select2();
         });
     </script>
 

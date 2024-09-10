@@ -61,35 +61,37 @@
                             </div>
                         </div>
 
-                        <div class="flex flex-col p-5 md:p-0 w-full transform transition duration-300 ease-in-out pb-10" x-cloak
-                            x-show="reportsOpen" x-collapse x-collapse.duration.500ms>
+                        <div class="flex flex-col p-5 md:p-0 w-full transform transition duration-300 ease-in-out pb-10"
+                            x-cloak x-show="reportsOpen" x-collapse x-collapse.duration.500ms>
 
                             <div class="flex flex-col gap-2 sm:gap-6 sm:flex-row sm:items-start">
-                                <p class="w-32 sm:w-60 text-lg font-normal text-gray-500 sm:text-left dark:text-gray-400">
+                                <p
+                                    class="w-60 text-lg font-normal text-gray-500 sm:text-left dark:text-gray-400">
                                     Tempat
                                 </p>
                                 <p class="w-full text-small font-semibold text-slate-800 dark:text-white">
-                                   <span class="hidden sm:inline">:&nbsp;</span> {{ $act->tempat }}
-                                </p>
-                            </div>
-
-                            <div class="flex flex-col gap-2 sm:gap-6 sm:flex-row sm:items-start">
-                                <p class="w-32 sm:w-60 text-lg font-normal text-gray-500 sm:text-left dark:text-gray-400">
-                                    OPD Penyelenggara
-                                </p>
-                                <p class="w-full text-small font-semibold text-slate-800 dark:text-white">
-                                   <span class="hidden sm:inline">:&nbsp;</span> {{ $act->penyelenggara }}
+                                    <span class="hidden sm:inline">:&nbsp;</span> {{ $act->tempat }}
                                 </p>
                             </div>
 
                             <div class="flex flex-col gap-2 sm:gap-6 sm:flex-row sm:items-start">
                                 <p
-                                    class="w-32 sm:w-60 text-lg font-normal text-gray-500 sm:text-left dark:text-gray-400">
+                                    class="w-60 text-lg font-normal text-gray-500 sm:text-left dark:text-gray-400">
+                                    OPD Penyelenggara
+                                </p>
+                                <p class="w-full text-small font-semibold text-slate-800 dark:text-white">
+                                    <span class="hidden sm:inline">:&nbsp;</span> {{ $act->penyelenggara }}
+                                </p>
+                            </div>
+
+                            <div class="flex flex-col gap-2 sm:gap-6 sm:flex-row sm:items-start">
+                                <p
+                                    class="w-60 text-lg font-normal text-gray-500 sm:text-left dark:text-gray-400">
                                     Disposisi
                                 </p>
                                 <p class="w-full text-small font-semibold text-slate-800 dark:text-white">
                                     <span class="hidden sm:inline">:&nbsp;</span>
-                                    @if($act->disposisi)
+                                    @if ($act->disposisi)
                                         @foreach ($act->disposisi as $dis)
                                             {{ $dis->user->name }}; &nbsp;
                                         @endforeach
@@ -98,30 +100,32 @@
                             </div>
 
                             <div class="flex flex-col gap-2 sm:gap-6 sm:flex-row sm:items-start">
-                                <p class="w-32 sm:w-60 text-lg font-normal text-gray-500 sm:text-left dark:text-gray-400">
+                                <p
+                                    class="w-60 text-lg font-normal text-gray-500 sm:text-left dark:text-gray-400">
                                     Catatan / NB
                                 </p>
                                 <p class="w-full text-small font-semibold text-slate-800 dark:text-white">
-                                   <span class="hidden sm:inline">:&nbsp;</span>
-                                   {{ $act->catatan ?? '-' }}
+                                    <span class="hidden sm:inline">:&nbsp;</span>
+                                    {{ $act->catatan ?? '-' }}
                                 </p>
                             </div>
 
                             <div class="flex flex-col gap-2 sm:gap-6 sm:flex-row sm:items-start">
-                                <p class="w-32 sm:w-60 text-lg font-normal text-gray-500 sm:text-left dark:text-gray-400">
+                                <p
+                                    class="w-60 text-lg font-normal text-gray-500 sm:text-left dark:text-gray-400">
                                     Surat
                                 </p>
                                 <p class="flex w-full text-small font-semibold text-slate-800 dark:text-white">
-                                   <span class="hidden sm:inline">:&nbsp;</span>
-                                   @if ($act->file != null)
+                                    <span class="hidden sm:inline">:&nbsp;</span>
+                                    @if ($act->file != null)
                                         @php
                                             $ext = pathinfo($act->file, PATHINFO_EXTENSION);
                                         @endphp
                                         @if ($ext == 'pdf')
-                                        <a href="{{ url('/storage/files/' . $act->file) }}" target="_blank">
-                                            <img src="{{ url('assets/images/pdf.png') }}" alt=""
-                                                width="24px" class="cursor-pointer"/>
-                                        </a>
+                                            <a href="{{ url('/storage/files/' . $act->file) }}" target="_blank">
+                                                <img src="{{ url('assets/images/pdf.png') }}" alt=""
+                                                    width="24px" class="cursor-pointer" />
+                                            </a>
                                         @else
                                             <img src="{{ url('assets/images/mail.png') }}" alt=""
                                                 width="24px" class="cursor-pointer"
@@ -130,6 +134,34 @@
                                     @endif
                                 </p>
                             </div>
+                            @role('admin')
+                                <div class="flex flex-col gap-2 sm:gap-6 sm:flex-row sm:items-start">
+                                    <form action="{{ route('aktivitas.edit', $act->id) }}" method="GET">
+                                        <x-primary-button type="submit" class="mt-2">
+                                            <svg class="feather feather-edit" fill="none" height="16"
+                                                stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                                                stroke-width="2" viewBox="0 0 24 24" width="24"
+                                                xmlns="http://www.w3.org/2000/svg">
+                                                <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
+                                                <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
+                                            </svg>
+                                            &nbsp; Edit</x-secondary-button>
+                                    </form>
+
+                                    <form action="{{ route('aktivitas.delete') }}" method="POST"
+                                        onsubmit="return confirm('Yakin, mau hapus aktivitas ini?');">
+                                        @csrf
+                                        <input type="hidden" name="id" value="{{ $act->id }}">
+                                        <x-danger-button type="submit" class="mt-2">
+                                            <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="16"
+                                                height="16" viewBox="0 0 24 24" fill="#fff">
+                                                <path
+                                                    d="M 10 2 L 9 3 L 4 3 L 4 5 L 20 5 L 20 3 L 15 3 L 14 2 L 10 2 z M 5 7 L 5 22 L 19 22 L 19 7 L 5 7 z M 8 9 L 10 9 L 10 20 L 8 20 L 8 9 z M 14 9 L 16 9 L 16 20 L 14 20 L 14 9 z">
+                                                </path>
+                                            </svg>&nbsp; Hapus</x-danger-button>
+                                    </form>
+                                </div>
+                            @endrole
                         </div>
                     </div>
                 </div>
