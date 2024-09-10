@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\api;
 
 use App\Http\Controllers\Controller;
+use App\Models\Aktivitas;
 use App\Models\Message;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -41,7 +42,17 @@ class MessageApiController extends Controller
                 }
             } 
             else {
+                $tgl = Carbon::now();
+                $aktivitas = Aktivitas::whereDate('waktu_mulai', $tgl->format('Y-m-d'))->get();
+                $message = 'Kegiatan Hari ini: ' . $tgl->isoFormat('dddd, D MMMM Y').'\n\n';
+                foreach ($aktivitas as $a) {
+                    $message .= '* '.$a->aktivitas . "\n";
+                }
 
+                Message::create([
+                    'to' => $fromToSave,
+                    'message' => $message,
+                ]);
             }
         }
 
