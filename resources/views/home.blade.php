@@ -110,30 +110,33 @@
                                 </p>
                             </div>
 
-                            <div class="flex flex-col gap-2 sm:gap-6 sm:flex-row sm:items-start">
-                                <p
-                                    class="w-60 text-lg font-normal text-gray-500 sm:text-left dark:text-gray-400">
-                                    Surat
-                                </p>
-                                <p class="flex w-full text-small font-semibold text-slate-800 dark:text-white">
-                                    <span class="hidden sm:inline">:&nbsp;</span>
-                                    @if ($act->file != null)
-                                        @php
-                                            $ext = pathinfo($act->file, PATHINFO_EXTENSION);
-                                        @endphp
-                                        @if ($ext == 'pdf')
-                                            <a href="{{ url('/storage/files/' . $act->file) }}" target="_blank">
-                                                <img src="{{ url('assets/images/pdf.png') }}" alt=""
-                                                    width="24px" class="cursor-pointer" />
-                                            </a>
-                                        @else
-                                            <img src="{{ url('assets/images/mail.png') }}" alt=""
-                                                width="24px" class="cursor-pointer"
-                                                @click="$dispatch('lightbox',  {  imgModalSrc: '{{ url('/storage/files/' . $act->file) }}' })" />
+                            @auth
+                                <div class="flex flex-col gap-2 sm:gap-6 sm:flex-row sm:items-start">
+                                    <p
+                                        class="w-60 text-lg font-normal text-gray-500 sm:text-left dark:text-gray-400">
+                                        Surat
+                                    </p>
+                                    <p class="flex w-full text-small font-semibold text-slate-800 dark:text-white">
+                                        <span class="hidden sm:inline">:&nbsp;</span>
+                                        @if ($act->file != null)
+                                            @php
+                                                $ext = pathinfo($act->file, PATHINFO_EXTENSION);
+                                            @endphp
+                                            @if ($ext == 'pdf')
+                                                <a href="{{ url('/storage/files/' . $act->file) }}" target="_blank">
+                                                    <img src="{{ url('assets/images/pdf.png') }}" alt=""
+                                                        width="24px" class="cursor-pointer" />
+                                                </a>
+                                            @else
+                                                <img src="{{ url('assets/images/mail.png') }}" alt=""
+                                                    width="24px" class="cursor-pointer"
+                                                    @click="$dispatch('lightbox',  {  imgModalSrc: '{{ url('/storage/files/' . $act->file) }}' })" />
+                                            @endif
                                         @endif
-                                    @endif
-                                </p>
-                            </div>
+                                    </p>
+                                </div>
+                            @endauth
+
                             @role('admin')
                                 <div class="flex flex-col gap-2 sm:gap-6 sm:flex-row sm:items-start">
                                     <form action="{{ route('aktivitas.edit', $act->id) }}" method="GET">
