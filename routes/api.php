@@ -9,3 +9,4 @@ Route::get('/user', function (Request $request) {
 })->middleware('auth:sanctum');
 
 Route::post('/save-message', [MessageApiController::class, 'store']);
+Route::post('/anoman-receive', [MessageApiController::class, 'anomanReceive']);
