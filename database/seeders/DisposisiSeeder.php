@@ -13,6 +13,6 @@ class DisposisiSeeder extends Seeder
      */
     public function run(): void
     {
-        Disposisi::factory(100)->create();
+        Disposisi::factory(10)->create();
     }
 }

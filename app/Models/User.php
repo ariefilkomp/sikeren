@@ -53,15 +53,15 @@ class User extends Authenticatable
         return $this->hasMany(TeamMember::class);
     }
 
-    public function peserta()
+    public function disposisi()
     {
-        return $this->hasMany(Peserta::class);
+        return $this->hasMany(Disposisi::class);
     }
 
-    public function aktivitas()
+    public function nextAgenda()
     {
-        $aktivitas_ids = $this->peserta()->pluck('aktivitas_id');
-        $aktivitas = Aktivitas::whereIn('id', $aktivitas_ids)->get();
+        $aktivitas_ids = $this->disposisi()->pluck('aktivitas_id');
+        $aktivitas = Aktivitas::whereIn('id', $aktivitas_ids)->whereDate('waktu_mulai', '>=', now())->get();
         return $aktivitas;
     }
 

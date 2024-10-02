@@ -17,8 +17,8 @@ class DisposisiFactory extends Factory
     public function definition(): array
     {
         return [
-            'aktivitas_id' => rand(1,100),
-            'user_id' => rand(1,58),
+            'aktivitas_id' => rand(1,10),
+            'user_id' => 55,
         ];
     }
 }

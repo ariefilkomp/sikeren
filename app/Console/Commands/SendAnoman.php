@@ -65,7 +65,11 @@ class SendAnoman extends Command
         ];
         
         $response = Http::accept('application/json')->withToken($token)->post($url, $pp);
-
+        // echo 'Url: '.$url.'\n';
+        // echo 'Token: '.$token.'\n';
+        // echo 'Pesan: '.$message->message.'\n';
+        // echo 'No HP: '.$no_hp.'\n';
+        // echo $response->body();
         if ($response->successful()) {
             $message->sent_time = now();
             $message->save();
