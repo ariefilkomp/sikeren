@@ -63,6 +63,7 @@ class SendWa extends Command
             'session' => $waSession,
             'to' => $no_hp,
             'text' => $message->message,
+            'key' => env('API_TOKEN','kmzway87aa'),
         ];
         $response = Http::get($url, $pp);
 
@@ -71,8 +72,8 @@ class SendWa extends Command
             $message->save();
             echo "Berhasil send message to $no_hp";
         } else {
-            echo $response->body()."\n".PHP_EOL;
-            echo "Gagal send message to $no_hp";
+            echo $response->body()."\n";
+            echo "Gagal send message to $no_hp \n";
         }
     }
 }
