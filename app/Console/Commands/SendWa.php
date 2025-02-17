@@ -50,7 +50,7 @@ class SendWa extends Command
 
     private function send(String $no_hp, Message $message)
     {
-        $url = env('WA_SEND_URL','http://localhost:5001/send-message');
+        $url = env('WA_SEND_URL','http://localhost:5005/message/send-text');
         $waSession = env('WA_SESSION','mysession');
 
         if (substr($no_hp, 0, 1) == '0') {
@@ -64,13 +64,14 @@ class SendWa extends Command
             'to' => $no_hp,
             'text' => $message->message,
         ];
-        $response = Http::post($url, $pp);
+        $response = Http::get($url, $pp);
 
         if ($response->successful()) {
             $message->sent_time = now();
             $message->save();
             echo "Berhasil send message to $no_hp";
         } else {
+            echo $response->body()."\n".PHP_EOL;
             echo "Gagal send message to $no_hp";
         }
     }
