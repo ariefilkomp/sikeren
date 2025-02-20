@@ -16,6 +16,18 @@
                         {{ $today }}
                     </h3>
 
+                    <div class="max-w-md mx-auto">
+                        <x-input-label for="kode_opd" :value="__('OPD')" />
+                        <select
+                            class="border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 shadow-sm mt-1 block w-full"
+                            name="kode_opd" id="kode_opd" onchange="opdChange()">
+                                <option value=""> -- SEMUA OPD -- </option>
+                                @foreach ($opds as $opd)
+                                    <option value="{{ $opd->kode }}" @if($kodeOpd == $opd->kode) selected @endif> {{$opd->nama_opd}} </option>
+                                @endforeach
+                        </select>
+                    </div>
+
                     <div class="mt-2">
                         <a href="{{ route('aktivitas.perBulan') }}" title=""
                             class="inline-flex items-center text-lg font-medium text-blue-600 hover:underline dark:text-blue-300">
@@ -216,5 +228,11 @@
         </div>
     </div>
 
-    <script></script>
+    <script>
+        function opdChange() {
+            var opd = document.getElementById("kode_opd").value;
+            var url = "{{url('/dashboard')}}?date={{$date}}&kode_opd=" + opd;
+            window.location.href = url;
+        }
+    </script>
 </x-app-layout>

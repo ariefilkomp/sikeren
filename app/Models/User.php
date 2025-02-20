@@ -23,6 +23,9 @@ class User extends Authenticatable
         'bidang_id',
         'atasan_id',
         'password',
+        'kode_opd',
+        'nip',
+        'nip_atasan'
     ];
 
     /**

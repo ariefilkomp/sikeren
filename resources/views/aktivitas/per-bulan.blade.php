@@ -6,7 +6,7 @@
                 <time datetime="{{ $yearMonth }}">{{ $currentMonthStr }}</time>
             </h1>
             <div class="flex items-center">
-                
+                <h1>{{ $namaOpd }}</h1>
                 <div class="md:ml-4 md:flex md:items-center">
                     <div class="relative">
                         <x-dropdown align="right" width="48">
@@ -101,7 +101,7 @@
                                     $hariKerja++;
                                 }
                             @endphp
-                            <a href="{{ route($rdrRouteName) }}?date={{ $per->format('Y-m-d') }}"
+                            <a href="{{ route($rdrRouteName) }}?date={{ $per->format('Y-m-d') }}&kode_opd={{ $kodeOpd }}"
                                 class="flex h-14 flex-col {{ $bgClass }} px-3 py-2 text-gray-900 hover:bg-gray-100 focus:z-10">
                                 <time datetime="{{ $per->format('Y-m-d') }}" class="ml-auto">{{ $per->format('d') }}</time>
                                 <div class="flex justify-center bg-slate-200 rounded-full text-blue-900">
@@ -110,7 +110,7 @@
                                 </div>
                             </a>
                         @else
-                            <a href="{{ route($rdrRouteName) }}?date={{ $per->format('Y-m-d') }}"
+                            <a href="{{ route($rdrRouteName) }}?date={{ $per->format('Y-m-d') }}&kode_opd={{ $kodeOpd }}"
                                 class="flex h-14 flex-col bg-gray-50 px-3 py-2 text-gray-500 hover:bg-gray-100 focus:z-10">
                                 <time datetime="{{ $per->format('Y-m-d') }}" class="ml-auto">{{ $per->format('d') }}</time>
                                 

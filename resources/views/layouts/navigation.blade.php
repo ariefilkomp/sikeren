@@ -38,6 +38,12 @@
                             {{ __('Profile') }}
                         </x-dropdown-link>
 
+                        @role('admin')
+                            <x-dropdown-link :href="route('import.user')">
+                                {{ __('Import User') }}
+                            </x-dropdown-link>
+                        @endrole
+
                         <!-- Authentication -->
                         <form method="POST" action="{{ route('logout') }}">
                             @csrf

@@ -8,8 +8,20 @@
             {{ $today }}
         </h3>
 
+        <div class="max-w-md mx-auto">
+            <x-input-label for="kode_opd" :value="__('OPD')" />
+            <select
+                class="border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 shadow-sm mt-1 block w-full"
+                name="kode_opd" id="kode_opd" onchange="opdChange()">
+                    <option value=""> -- SEMUA OPD -- </option>
+                    @foreach ($opds as $opd)
+                        <option value="{{ $opd->kode }}" @if($kodeOpd == $opd->kode) selected @endif> {{$opd->nama_opd}} </option>
+                    @endforeach
+            </select>
+        </div>
+
         <div class="mt-2">
-            <a href="{{ route('aktivitas.perBulan') }}" title=""
+            <a href="{{ route('aktivitas.perBulan') }}?kode_opd={{ $kodeOpd }}" title=""
                 class="inline-flex items-center text-lg font-medium text-blue-600 hover:underline dark:text-blue-500">
                 Lihat Tanggal Lain
                 <svg aria-hidden="true" class="w-5 h-5 ml-2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"
@@ -20,6 +32,23 @@
                 </svg>
             </a>
         </div>
+
+        @role('admin')
+            <div class="mt-4">
+                <a href="{{ route('aktivitas.create') }}" title=""
+                    class="inline-flex items-center px-4 py-2 bg-white border border-gray-300 rounded-md font-semibold text-xs text-gray-700 uppercase tracking-widest shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:opacity-25 transition ease-in-out duration-150">
+                    Tambah Aktivitas &nbsp;
+                    <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="24" height="24"
+                        viewBox="0 0 48 48">
+                        <path fill="#4caf50"
+                            d="M44,24c0,11.045-8.955,20-20,20S4,35.045,4,24S12.955,4,24,4S44,12.955,44,24z">
+                        </path>
+                        <path fill="#fff" d="M21,14h6v20h-6V14z"></path>
+                        <path fill="#fff" d="M14,21h20v6H14V21z"></path>
+                    </svg>
+                </a>
+            </div>
+        @endrole
     </div>
 
     <div class="flow-root max-w-3xl mx-auto mt-8 sm:mt-12 lg:mt-16" x-data="{ lightbox: false, imgModalSrc: '', imgModalAlt: '', imgModalDesc: '' }">
@@ -172,5 +201,13 @@
 
         </div>
     </div>
+
+    <script>
+        function opdChange() {
+            var opd = document.getElementById("kode_opd").value;
+            var url = "{{url('/')}}?date={{$date}}&kode_opd=" + opd;
+            window.location.href = url;
+        }
+    </script>
 
 </x-common-layout>

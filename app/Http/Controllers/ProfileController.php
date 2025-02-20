@@ -19,7 +19,7 @@ class ProfileController extends Controller
     {
         return view('profile.edit', [
             'user' => $request->user(),
-            'bidangs' => Bidang::all(),
+            'bidangs' => Bidang::where('kode_opd', auth()->user()->kode_opd)->get(),
         ]);
     }
 

@@ -6,10 +6,12 @@ use App\Models\Aktivitas;
 use App\Models\Bidang;
 use App\Models\Disposisi;
 use App\Models\Message;
+use App\Models\Opd;
 use App\Models\User;
 use Carbon\Carbon;
 use Carbon\CarbonPeriod;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
 
@@ -18,6 +20,11 @@ class AktivitasController extends Controller
     public function perBulan(Request $request)
     {
         $yearMonth = $request->get('ym', Carbon::now()->format('Y-m'));
+        $kodeOpd = $request->get('kode_opd');
+        $namaOpd = null;
+        if($kodeOpd) {
+            $namaOpd = Opd::where('kode', $kodeOpd)->first()?->nama_opd;
+        }
         $ym = Carbon::createFromFormat('Y-m', $yearMonth);
         $sm = Carbon::createFromFormat('Y-m', $yearMonth);
         $start = new Carbon('first day of ' . $ym->format('F Y'));
@@ -28,13 +35,24 @@ class AktivitasController extends Controller
         //get libur use Illuminate\Support\Facades\Http;
         $liburs = [];
         $liburUrl = 'https://dayoffapi.vercel.app/api?month=' . $ym->format('m') . '&year=' . $ym->format('Y');
-        $libur = Http::get($liburUrl)->json();
+        $libur = Cache::rememberForever('libur' . $ym->format('Ym'), function () use ($liburUrl) {
+            return Http::get($liburUrl)->json();
+        });
 
-        $aktivitas = Aktivitas::with('disposisi')
-            ->select(DB::raw('DATE(waktu_mulai) as date'), DB::raw('count(*) as jumlah_aktivitas'))
-            ->whereMonth('waktu_mulai', $ym->format('m'))
-            ->groupBy('date')
-            ->get()->keyBy('date')->toArray();
+        if($kodeOpd) {
+            $aktivitas = Aktivitas::with('disposisi')
+                ->select(DB::raw('DATE(waktu_mulai) as date'), DB::raw('count(*) as jumlah_aktivitas'))
+                ->where('kode_opd', $kodeOpd)
+                ->whereMonth('waktu_mulai', $ym->format('m'))
+                ->groupBy('date')
+                ->get()->keyBy('date')->toArray();            
+        } else {
+            $aktivitas = Aktivitas::with('disposisi')
+                ->select(DB::raw('DATE(waktu_mulai) as date'), DB::raw('count(*) as jumlah_aktivitas'))
+                ->whereMonth('waktu_mulai', $ym->format('m'))
+                ->groupBy('date')
+                ->get()->keyBy('date')->toArray();            
+        }
 
         if (count($libur) > 0) {
             foreach ($libur as $lib) {
@@ -42,13 +60,13 @@ class AktivitasController extends Controller
             }
         }
 
-        return view('aktivitas.per-bulan', compact('yearMonth', 'period', 'currentMonth', 'currentMonthStr', 'liburs', 'aktivitas'));
+        return view('aktivitas.per-bulan', compact('yearMonth', 'period', 'currentMonth', 'currentMonthStr', 'liburs', 'aktivitas', 'kodeOpd', 'namaOpd'));
     }
 
     public function create(Request $request)
     {
-        $users = User::all();
-        $bidangs = Bidang::all();
+        $users = User::where('kode_opd', auth()->user()->kode_opd)->get();
+        $bidangs = Bidang::where('kode_opd', auth()->user()->kode_opd)->get();
         return view('aktivitas.create', compact('users', 'bidangs'));
     }
 
@@ -68,6 +86,7 @@ class AktivitasController extends Controller
             $validated['file'] = basename($request->file->store('public/files'));
         }
         $validated['user_id'] = auth()->user()->id;
+        $validated['kode_opd'] = auth()->user()->kode_opd;
         $aktivitas = Aktivitas::create($validated);
         if (is_array($request->disposisi) && count($request->disposisi) > 0) {
             foreach ($request->disposisi as $user_id) {
