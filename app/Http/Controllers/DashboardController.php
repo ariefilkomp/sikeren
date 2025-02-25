@@ -18,9 +18,9 @@ class DashboardController extends Controller
         $labelHari = Carbon::now()->format('Y-m-d') == $date ? 'Hari ini' : 'Pada Hari';
 
         if($kodeOpd) {
-            $aktivitas = Aktivitas::with('disposisi')->where('kode_opd', $kodeOpd)->whereDate('waktu_mulai', $date)->orderBy('waktu_mulai', 'asc')->get();
+            $aktivitas = Aktivitas::with('disposisi')->where('published', 1)->where('kode_opd', $kodeOpd)->whereDate('waktu_mulai', $date)->orderBy('waktu_mulai', 'asc')->get();
         } else {
-            $aktivitas = Aktivitas::with('disposisi')->whereDate('waktu_mulai', $date)->orderBy('waktu_mulai', 'asc')->get();
+            $aktivitas = Aktivitas::with('disposisi')->where('published', 1)->whereDate('waktu_mulai', $date)->orderBy('waktu_mulai', 'asc')->get();
         }
         return view('dashboard', compact('today', 'labelHari', 'date', 'aktivitas', 'opds', 'kodeOpd'));
     }

@@ -409,4 +409,9 @@ class AktivitasController extends Controller
         $aktivitas->delete();
         return redirect()->route('dashboard')->with('success', 'Berhasil Menghapus Aktivitas.');
     }
+
+    public function draft(Request $request)
+    {
+        return view('aktivitas.draft');
+    }
 }

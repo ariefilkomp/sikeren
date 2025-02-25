@@ -234,5 +234,9 @@
             var url = "{{url('/dashboard')}}?date={{$date}}&kode_opd=" + opd;
             window.location.href = url;
         }
+
+        $(document).ready(function() {
+            $('#kode_opd').select2();
+        });
     </script>
 </x-app-layout>

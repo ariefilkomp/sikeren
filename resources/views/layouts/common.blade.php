@@ -14,6 +14,11 @@
 
     <!-- Scripts -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
+
+    <link rel="stylesheet" href="{{ url('assets/css/select2.min.css') }}">
+
+    <script src="{{ url('assets/js/jquery.min.js')}}"></script>
+    <script src="{{ url('assets/js/select2.min.js')}}"></script>
 </head>
 
 <body class="font-sans antialiased dark:bg-black dark:text-white/50">

@@ -5,6 +5,7 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\UserController;
+use App\Models\Aktivitas;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
@@ -18,16 +19,17 @@ Route::middleware('auth')->group(function () {
     
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');        
-});
-
+    });
+    
 Route::middleware(['auth', 'verified', 'role:admin'])->group(function () {
     Route::get('/aktivitas/create', [AktivitasController::class, 'create'])->name('aktivitas.create');    
     Route::post('/aktivitas/create', [AktivitasController::class, 'store']);    
-    Route::post('/aktivitas/delete', [AktivitasController::class, 'destroy'])->name('aktivitas.delete');    
+    Route::post('/aktivitas/delete', [AktivitasController::class, 'destroy'])->name('aktivitas.delete');
+    Route::get('/aktivitas/draft', [AktivitasController::class, 'draft'])->name('draft');    
     Route::get('/aktivitas/{id}', [AktivitasController::class, 'edit'])->name('aktivitas.edit');    
     Route::post('/aktivitas/{id}', [AktivitasController::class, 'update']);    
     Route::get('/import-user', [UserController::class, 'import'])->name('import.user');    
-    Route::post('/import-user', [UserController::class, 'importStore']);    
+    Route::post('/import-user', [UserController::class, 'importStore']);  
 });
 
 require __DIR__.'/auth.php';
