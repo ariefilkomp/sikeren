@@ -112,6 +112,41 @@
                             <x-input-error class="mt-2" :messages="$errors->get('file')" />
                         </div>
 
+                        <div>
+                            <x-input-label for="pengingat" :value="__('Pengingat')" />
+                            <div class="flex gap-2 items-center">
+                                <p>-</p>
+                                <x-text-input id="pengingat" name="pengingat" type="number" class="w-20"
+                                    :value="old('pengingat',2)" required autofocus autocomplete="pengingat" />
+                                <x-input-error class="mt-2" :messages="$errors->get('pengingat')" />
+                                <p>Jam</p>
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="cursor-pointer">
+                                <span class="block font-medium text-sm text-gray-700 dark:text-gray-300">Kirim Pemberitahuan Saat Dipublish</span>
+                                <input type="checkbox" id="notif_on_publish" value="1"
+                                    name="notif_on_publish" class="sr-only peer">
+                                <div
+                                    class="mt-2 relative w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600">
+                                </div>
+                            </label>
+                            <x-input-error class="mt-2" :messages="$errors->get('notif_on_publish')" />
+                        </div>
+
+                        <div>
+                            <label class="cursor-pointer">
+                                <span class="block font-medium text-sm text-gray-700 dark:text-gray-300">Published</span>
+                                <input type="checkbox" id="published" value="1"
+                                    name="published" class="sr-only peer">
+                                <div
+                                    class="mt-2 relative w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600">
+                                </div>
+                            </label>
+                            <x-input-error class="mt-2" :messages="$errors->get('published')" />
+                        </div>
+
                         <div class="flex items-center gap-4">
                             <x-primary-button>{{ __('Simpan') }}</x-primary-button>
                         </div>

@@ -80,6 +80,7 @@ class AktivitasController extends Controller
             'tempat' => 'required',
             'file' => 'nullable|file|max:2048|mimes:pdf,jpg,jpeg,png',
             'catatan' => 'nullable',
+            'published' => 'nullable|numeric',
         ]);
 
         if ($request->hasFile('file')) {
