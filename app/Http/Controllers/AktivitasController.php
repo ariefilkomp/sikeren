@@ -98,7 +98,7 @@ class AktivitasController extends Controller
             }
         }
 
-        if ($aktivitas) {
+        if ($aktivitas && $request->published == 1) {
             $disp = (is_array($request->disposisi) && count($request->disposisi) > 0) ? User::whereIn('id', $request->disposisi)->get() : [];
             $waktu_mulai = Carbon::parse($aktivitas->waktu_mulai);
             $waktu_selesai = !empty($aktivitas->waktu_selesai) ? Carbon::parse($aktivitas->waktu_selesai)->format('H:i') : 'Selesai';
@@ -107,63 +107,67 @@ class AktivitasController extends Controller
             $namaUserDisposisi = [];
             $atasanIds = [];
             foreach ($disp as $d) {
-                $disposisiTemplate = file_get_contents(resource_path() . '/disposisi_template.txt');
-                $disposisiTemplate = str_replace(
-                    [
-                        '{{nama}}',
-                        '{{rincian_kegiatan}}',
-                        '{{penyelenggara}}',
-                        '{{waktu}}',
-                        '{{tempat}}',
-                        '{{catatan}}',
-                        '{{hari}}',
-                        '{{url}}'
-                    ],
-                    [
-                        $d->name,
-                        $aktivitas->aktivitas,
-                        $aktivitas->penyelenggara,
-                        $waktu,
-                        $aktivitas->tempat,
-                        $aktivitas->catatan,
-                        $waktu_mulai->isoFormat('dddd, D MMMM Y'),
-                        url('/?date=' . $waktu_mulai->format('Y-m-d'))
-                    ],
-                    $disposisiTemplate
-                );
-
-                $namaUserDisposisi[] = $d->name;
-                if (!empty($d->atasan_id)) {
-                    $atasanIds[$d->atasan_id] = $d->atasan_id;
+                if($request->notif_on_publish == 1) {
+                    $disposisiTemplate = file_get_contents(resource_path() . '/disposisi_template.txt');
+                    $disposisiTemplate = str_replace(
+                        [
+                            '{{nama}}',
+                            '{{rincian_kegiatan}}',
+                            '{{penyelenggara}}',
+                            '{{waktu}}',
+                            '{{tempat}}',
+                            '{{catatan}}',
+                            '{{hari}}',
+                            '{{url}}'
+                        ],
+                        [
+                            $d->name,
+                            $aktivitas->aktivitas,
+                            $aktivitas->penyelenggara,
+                            $waktu,
+                            $aktivitas->tempat,
+                            $aktivitas->catatan,
+                            $waktu_mulai->isoFormat('dddd, D MMMM Y'),
+                            url('/?date=' . $waktu_mulai->format('Y-m-d'))
+                        ],
+                        $disposisiTemplate
+                    );
+    
+                    $namaUserDisposisi[] = $d->name;
+                    if (!empty($d->atasan_id)) {
+                        $atasanIds[$d->atasan_id] = $d->atasan_id;
+                    }
+    
+                    Message::create([
+                        'to' => $d->no_hp,
+                        'message' => $disposisiTemplate,
+                        'aktivitas_id' => $aktivitas->id,
+                    ]);
                 }
 
-                Message::create([
-                    'to' => $d->no_hp,
-                    'message' => $disposisiTemplate,
-                    'aktivitas_id' => $aktivitas->id,
-                ]);
-
                 // scheduled pengingat
-                $pengingatTemplate = file_get_contents(resource_path() . '/pengingat_template.txt');
-                $pengingatTemplate = str_replace(
-                    [
-                        '{{rincian_kegiatan}}',
-                        '{{hari}}',
-                        '{{url}}'
-                    ],
-                    [
-                        $aktivitas->aktivitas,
-                        $waktu_mulai->isoFormat('dddd, D MMMM Y'),
-                        url('/?date=' . $waktu_mulai->format('Y-m-d'))
-                    ],
-                    $pengingatTemplate
-                );
-                Message::create([
-                    'to' => $d->no_hp,
-                    'message' => $pengingatTemplate,
-                    'aktivitas_id' => $aktivitas->id,
-                    'sending_time' => Carbon::parse($aktivitas->waktu_mulai)->subHour(2),
-                ]);
+                if($request->pengingat) {
+                    $pengingatTemplate = file_get_contents(resource_path() . '/pengingat_template.txt');
+                    $pengingatTemplate = str_replace(
+                        [
+                            '{{rincian_kegiatan}}',
+                            '{{hari}}',
+                            '{{url}}'
+                        ],
+                        [
+                            $aktivitas->aktivitas,
+                            $waktu_mulai->isoFormat('dddd, D MMMM Y'),
+                            url('/?date=' . $waktu_mulai->format('Y-m-d'))
+                        ],
+                        $pengingatTemplate
+                    );
+                    Message::create([
+                        'to' => $d->no_hp,
+                        'message' => $pengingatTemplate,
+                        'aktivitas_id' => $aktivitas->id,
+                        'sending_time' => Carbon::parse($aktivitas->waktu_mulai)->subHour($request->pengingat),
+                    ]);
+                }
             }
 
             if (count($atasanIds) > 0) {
@@ -215,15 +219,18 @@ class AktivitasController extends Controller
                 }
 
                 // ke kadin
-                $kadin = User::role('kadin')->first();
-                if ($kadin) {
-                    Message::create([
-                        'to' => $kadin->no_hp,
-                        'message' => $pengingatAtasanTemplate,
-                        'aktivitas_id' => $aktivitas->id,
-                        'sending_time' => Carbon::parse($aktivitas->waktu_mulai)->subHour(2),
-                    ]);
+                if(auth()->user()->kode_opd == '07000000') {
+                    $kadin = User::where('bidang_id', 1)->first();
+                    if ($kadin) {
+                        Message::create([
+                            'to' => $kadin->no_hp,
+                            'message' => $pengingatAtasanTemplate,
+                            'aktivitas_id' => $aktivitas->id,
+                            'sending_time' => Carbon::parse($aktivitas->waktu_mulai)->subHour(2),
+                        ]);
+                    }
                 }
+
             }
         }
         return redirect()->route('dashboard')->with('success', 'Berhasil menambahkan Aktivitas.');
