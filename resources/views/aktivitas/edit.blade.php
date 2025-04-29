@@ -116,6 +116,61 @@
                             <x-input-error class="mt-2" :messages="$errors->get('file')" />
                         </div>
 
+                        <div>
+                            <x-input-label for="min_jam" :value="__('Pengingat')" />
+                            <div class="flex gap-2 items-center">
+                                <p>-</p>
+                                <x-text-input id="min_jam" name="min_jam" type="number" class="w-20"
+                                    :value="old('min_jam',$aktivitas->min_jam)" required autofocus autocomplete="min_jam" />
+                                <x-input-error class="mt-2" :messages="$errors->get('min_jam')" />
+                                <p>Jam</p>
+                            </div>
+                        </div>
+
+                        <div>
+                            <x-input-label for="recurrence_type" :value="__('Ingatkan Berulang Setiap ')" />
+
+                            <div class="flex gap-2 items-center">
+                                <x-text-input id="recurrence_interval" name="recurrence_interval" type="number" class="w-20"
+                                    :value="old('recurrence_interval', $aktivitas->recurrence_interval)" required autofocus autocomplete="recurrence_interval" />
+                                <x-input-error class="mt-2" :messages="$errors->get('recurrence_interval')" />
+                                <select
+                                    class="border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 shadow-sm mt-1 block w-full"
+                                    name="recurrence_type" id="recurrence_type">
+                                    <option value="none">-- Pengingat Tidak Berulang --</option>
+                                    <option value="daily" @if($aktivitas->recurrence_type == 'daily') selected @endif>Hari</option>
+                                    <option value="weekly" @if($aktivitas->recurrence_type == 'weekly') selected @endif>Pekan</option>
+                                    <option value="monthly" @if($aktivitas->recurrence_type == 'monthly') selected @endif>Bulan</option>
+                                    <option value="yearly" @if($aktivitas->recurrence_type == 'yearly') selected @endif>Tahun</option>
+                                </select>
+                            </div>
+
+                        </div>
+
+                        <div>
+                            <label class="cursor-pointer">
+                                <x-input-label for="notif_on_publish" :value="__('Kirim Pemberitahuan Saat Dipublish')" />
+                                <input type="checkbox" id="notif_on_publish" value="1"
+                                    name="notif_on_publish" class="sr-only peer" checked>
+                                <div
+                                    class="mt-2 relative w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600">
+                                </div>
+                            </label>
+                            <x-input-error class="mt-2" :messages="$errors->get('notif_on_publish')" />
+                        </div>
+
+                        <div>
+                            <label class="cursor-pointer">
+                                <x-input-label for="published" :value="__('Published')" />
+                                <input type="checkbox" id="published" value="1"
+                                    name="published" class="sr-only peer" checked>
+                                <div
+                                    class="mt-2 relative w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600">
+                                </div>
+                            </label>
+                            <x-input-error class="mt-2" :messages="$errors->get('published')" />
+                        </div>
+
                         <div class="flex items-center gap-4">
                             <x-primary-button>{{ __('Simpan') }}</x-primary-button>
                         </div>

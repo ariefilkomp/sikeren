@@ -28,7 +28,7 @@ class SendStarsender extends Command
      */
     public function handle()
     {
-        $messages = Message::whereNotNull('to')->where('sent_time', null)->get();
+        $messages = Message::with('aktivitas')->whereNotNull('to')->where('sent_time', null)->get();
         if ($messages->count() == 0) {
             echo "Tidak ada pesan yang perlu dikirim";
             return;
@@ -42,6 +42,32 @@ class SendStarsender extends Command
                 $now = Carbon::now()->setTimezone('Asia/Jakarta');
                 if($now->gte($message->sending_time)) {
                     $this->send($message->to, $message);
+
+                    $nextRemindAt = null;
+
+                    switch ($message->aktivitas->recurrence_type) {
+                        case 'daily':
+                            $nextRemindAt = Carbon::parse($message->sending_time)->addDays($message->aktivitas->recurrence_interval ?? 1);
+                            break;
+                        case 'weekly':
+                            $nextRemindAt = Carbon::parse($message->sending_time)->addWeeks($message->aktivitas->recurrence_interval ?? 1);
+                            break;
+                        case 'monthly':
+                            $nextRemindAt = Carbon::parse($message->sending_time)->addMonths($message->aktivitas->recurrence_interval ?? 1);
+                            break;
+                        case 'yearly':
+                            $nextRemindAt = Carbon::parse($message->sending_time)->addYears($message->aktivitas->recurrence_interval ?? 1);
+                            break;
+                    }
+        
+                    if ($nextRemindAt && $nextRemindAt->isFuture()) {
+                        Message::create([
+                            'to' => $message->to,
+                            'message' => $message->message,
+                            'aktivitas_id' => $message->aktivitas_id,
+                            'sending_time' => $nextRemindAt,
+                        ]);
+                    }
                 }
             }
             

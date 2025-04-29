@@ -80,6 +80,10 @@ class AktivitasController extends Controller
             'tempat' => 'required',
             'file' => 'nullable|file|max:2048|mimes:pdf,jpg,jpeg,png',
             'catatan' => 'nullable',
+            'min_jam' => 'required|numeric',
+            'recurrence_type' => 'nullable',
+            'recurrence_interval' => 'nullable',
+            'notif_on_publish' => 'nullable|numeric',
             'published' => 'nullable|numeric',
         ]);
 
@@ -146,15 +150,17 @@ class AktivitasController extends Controller
                 }
 
                 // scheduled pengingat
-                if($request->pengingat) {
+                if($request->min_jam) {
                     $pengingatTemplate = file_get_contents(resource_path() . '/pengingat_template.txt');
                     $pengingatTemplate = str_replace(
                         [
+                            '{{jam}}',
                             '{{rincian_kegiatan}}',
                             '{{hari}}',
                             '{{url}}'
                         ],
                         [
+                            $aktivitas->min_jam,
                             $aktivitas->aktivitas,
                             $waktu_mulai->isoFormat('dddd, D MMMM Y'),
                             url('/?date=' . $waktu_mulai->format('Y-m-d'))
@@ -165,7 +171,7 @@ class AktivitasController extends Controller
                         'to' => $d->no_hp,
                         'message' => $pengingatTemplate,
                         'aktivitas_id' => $aktivitas->id,
-                        'sending_time' => Carbon::parse($aktivitas->waktu_mulai)->subHour($request->pengingat),
+                        'sending_time' => Carbon::parse($aktivitas->waktu_mulai)->subHour($request->min_jam),
                     ]);
                 }
             }
@@ -197,12 +203,14 @@ class AktivitasController extends Controller
                     $pengingatAtasanTemplate = file_get_contents(resource_path() . '/pengingat_atasan_template.txt');
                     $pengingatAtasanTemplate = str_replace(
                         [
+                            '{{jam}}',
                             '{{rincian_kegiatan}}',
                             '{{disposisi}}',
                             '{{hari}}',
                             '{{url}}'
                         ],
                         [
+                            $aktivitas->min_jam,
                             $aktivitas->aktivitas,
                             implode(', ', $namaUserDisposisi),
                             $waktu_mulai->isoFormat('dddd, D MMMM Y'),
@@ -214,7 +222,7 @@ class AktivitasController extends Controller
                         'to' => $a->no_hp,
                         'message' => $pengingatAtasanTemplate,
                         'aktivitas_id' => $aktivitas->id,
-                        'sending_time' => Carbon::parse($aktivitas->waktu_mulai)->subHour(2),
+                        'sending_time' => Carbon::parse($aktivitas->waktu_mulai)->subHour($request->min_jam),
                     ]);
                 }
 
@@ -226,7 +234,7 @@ class AktivitasController extends Controller
                             'to' => $kadin->no_hp,
                             'message' => $pengingatAtasanTemplate,
                             'aktivitas_id' => $aktivitas->id,
-                            'sending_time' => Carbon::parse($aktivitas->waktu_mulai)->subHour(2),
+                            'sending_time' => Carbon::parse($aktivitas->waktu_mulai)->subHour($request->min_jam),
                         ]);
                     }
                 }
@@ -257,6 +265,11 @@ class AktivitasController extends Controller
             'tempat' => 'required',
             'file' => 'nullable|file|max:2048|mimes:pdf,jpg,jpeg,png',
             'catatan' => 'nullable',
+            'min_jam' => 'required|numeric',
+            'recurrence_type' => 'nullable',
+            'recurrence_interval' => 'nullable',
+            'notif_on_publish' => 'nullable|numeric',
+            'published' => 'nullable|numeric',
         ]);
 
         if ($request->hasFile('file')) {
@@ -322,22 +335,25 @@ class AktivitasController extends Controller
             $pengingatTemplate = file_get_contents(resource_path() . '/pengingat_template.txt');
             $pengingatTemplate = str_replace(
                 [
+                    '{{jam}}',
                     '{{rincian_kegiatan}}',
                     '{{hari}}',
                     '{{url}}'
                 ],
                 [
+                    $aktivitas->min_jam,
                     $aktivitas->aktivitas,
                     $waktu_mulai->isoFormat('dddd, D MMMM Y'),
                     url('/?date=' . $waktu_mulai->format('Y-m-d'))
                 ],
                 $pengingatTemplate
             );
+            
             Message::create([
                 'to' => $d->no_hp,
                 'message' => $pengingatTemplate,
                 'aktivitas_id' => $aktivitas->id,
-                'sending_time' => Carbon::parse($aktivitas->waktu_mulai)->subHour(2),
+                'sending_time' => Carbon::parse($aktivitas->waktu_mulai)->subHour($request->min_jam),
             ]);
         }
 
@@ -375,12 +391,14 @@ class AktivitasController extends Controller
                 $pengingatAtasanTemplate = file_get_contents(resource_path() . '/pengingat_atasan_template.txt');
                 $pengingatAtasanTemplate = str_replace(
                     [
+                        '{{jam}}',
                         '{{rincian_kegiatan}}',
                         '{{disposisi}}',
                         '{{hari}}',
                         '{{url}}'
                     ],
                     [
+                        $aktivitas->min_jam,
                         $aktivitas->aktivitas,
                         implode(', ', $namaUserDisposisi),
                         $waktu_mulai->isoFormat('dddd, D MMMM Y'),
@@ -392,7 +410,7 @@ class AktivitasController extends Controller
                     'to' => $a->no_hp,
                     'message' => $pengingatAtasanTemplate,
                     'aktivitas_id' => $aktivitas->id,
-                    'sending_time' => Carbon::parse($aktivitas->waktu_mulai)->subHour(2),
+                    'sending_time' => Carbon::parse($aktivitas->waktu_mulai)->subHour($request->min_jam),
                 ]);
             }
 
@@ -403,7 +421,7 @@ class AktivitasController extends Controller
                     'to' => $kadin->no_hp,
                     'message' => $pengingatAtasanTemplate,
                     'aktivitas_id' => $aktivitas->id,
-                    'sending_time' => Carbon::parse($aktivitas->waktu_mulai)->subHour(2),
+                    'sending_time' => Carbon::parse($aktivitas->waktu_mulai)->subHour($request->min_jam),
                 ]);
             }
         }

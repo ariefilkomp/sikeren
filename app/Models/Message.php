@@ -15,4 +15,9 @@ class Message extends Model
     {
         return $this->belongsTo(User::class, 'to', 'no_hp');
     }
+
+    public function aktivitas()
+    {
+        return $this->belongsTo(Aktivitas::class);
+    }
 }

@@ -1,6 +1,6 @@
 PENGINGAT!
 
-2 Jam lagi kegiatan *{{rincian_kegiatan}}* Akan dimulai!
+{{jam}} Jam lagi kegiatan *{{rincian_kegiatan}}* Akan dimulai!
 
 Disposisi: {{disposisi}}
 
