@@ -133,7 +133,7 @@
                                 <select
                                     class="border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 shadow-sm mt-1 block w-full"
                                     name="recurrence_type" id="recurrence_type">
-                                    <option value="">-- Pengingat Tidak Berulang --</option>
+                                    <option value="none">-- Pengingat Tidak Berulang --</option>
                                     <option value="daily">Hari</option>
                                     <option value="weekly">Pekan</option>
                                     <option value="monthly">Bulan</option>
