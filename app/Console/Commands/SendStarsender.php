@@ -28,13 +28,17 @@ class SendStarsender extends Command
      */
     public function handle()
     {
-        $messages = Message::with('aktivitas')->whereNotNull('to')->where('sent_time', null)->get();
+        $messages = Message::with('aktivitas')->whereNotNull('to')->where('sent_time', null)->lazy();
         if ($messages->count() == 0) {
             echo "Tidak ada pesan yang perlu dikirim";
             return;
         }
 
         foreach ($messages as $message) {
+            if (!$message->aktivitas) {
+                $message->delete();
+                continue;
+            }
 
             if ($message->sending_time == null) {
                 $this->send($message->to, $message);

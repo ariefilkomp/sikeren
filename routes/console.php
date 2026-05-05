@@ -10,4 +10,4 @@ Artisan::command('inspire', function () {
 
 // Schedule::command('wa:send')->everyTwoSeconds()->withoutOverlapping();
 // Schedule::command('anoman:send')->everyTwoSeconds();
-Schedule::command('starsender:send')->everyTwoSeconds()->withoutOverlapping();
+Schedule::command('starsender:send')->everyFiveSeconds()->withoutOverlapping();

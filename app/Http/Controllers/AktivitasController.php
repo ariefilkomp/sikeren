@@ -277,6 +277,10 @@ class AktivitasController extends Controller
         }
         $validated['user_id'] = auth()->user()->id;
         Aktivitas::where('id', $request->id)->update($validated);
+        
+        // Hapus pesan yang belum terkirim untuk menghindari duplikasi saat update
+        Message::where('aktivitas_id', $aktivitas->id)->whereNull('sent_time')->delete();
+
         if (is_array($request->disposisi) && count($request->disposisi) > 0) {
             Disposisi::where('aktivitas_id', $request->id)->delete();
             foreach ($request->disposisi as $user_id) {
@@ -432,6 +436,10 @@ class AktivitasController extends Controller
     public function destroy(Request $request)
     {
         $aktivitas = Aktivitas::findOrFail($request->id);
+        
+        // Hapus semua pesan terkait aktivitas ini
+        Message::where('aktivitas_id', $aktivitas->id)->delete();
+        
         $aktivitas->delete();
         return redirect()->route('dashboard')->with('success', 'Berhasil Menghapus Aktivitas.');
     }
